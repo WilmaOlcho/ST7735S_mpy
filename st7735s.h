@@ -1,4 +1,5 @@
 #include "py/dynruntime.h"
+#include "py/obj.h"
 
 #define NOP     0x00 // No Operation
 #define SWRESET 0x01 // Software Reset
@@ -64,6 +65,49 @@
 
 #define GCV   0xFC // Gate Control Value
 
+static struct machine_spi_read_write {
+    mp_obj_t (*read)(mp_obj_t *self, size_t len);
+    void (*write)(mp_obj_t *self, const uint8_t *data, size_t len);
+};
+
+static machine_spi_read_write extract_read_write(mp_obj_t spi) {};
+static mp_obj_t LCD_ST7735S_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args_in) {};
+static void LCD_ST7735S_init(mp_obj_t *self) {};
+static void LCD_ST7735S_update(mp_obj_t *self_in) {};
+
+static void ST7735S_write_command(mp_obj_t *self, uint8_t command) {};
+static void ST7735S_write_data(mp_obj_t *self, int len, uint8_t[] data) {};
+
+static const mp_obj_type_t LCD_ST7735S_type;
+
+static void LCD_ST7735S_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {};
+
+
+static const mp_rom_map_elem_t ST7735S_locals_dict_table[] = {
+    { MP_ROM_QSTR(MP_QSTR_update), MP_ROM_PTR(&LCD_ST7735S_update) },
+    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&LCD_ST7735S_init) },
+    // on
+    // off
+    // invert
+    // rotation
+    // buffer
+    // fill
+    // pixel
+    // blit
+    
+};
+
+static MP_DEFINE_CONST_DICT(ST7735S_locals_dict, ST7735S_locals_dict_table);
+
+MP_DEFINE_CONST_OBJ_TYPE(
+    LCD_ST7735S_type, // type name
+    LCD_ST7735S, // type print name
+    MP_TYPE_FLAG_NONE, // type flags
+    make_new, LCD_ST7735S_make_new, // constructor
+    print, LCD_ST7735S_print, // print
+    locals_dict, &ST7735S_locals_dict // locals_dict
+    );
+
 typedef struct machine_spi_obj_t{
     mp_obj_base_t base;
     spi_inst_t *const spi_inst;
@@ -90,6 +134,7 @@ typedef struct _st7735s_obj_t {
     int rotation;
     int invert;
     int color_mode;
-} st7735s_obj_t;
+    machine_spi_read_write read_write;
+} ST7735S_obj_t;
 
 
