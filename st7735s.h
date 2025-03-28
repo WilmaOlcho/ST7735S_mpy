@@ -136,8 +136,23 @@ static struct machine_spi_read_write {
 
 static machine_spi_read_write extract_read_write(mp_obj_t spi) {};
 static mp_obj_t LCD_ST7735S_make_new(const mp_obj_type_t *type, size_t n_args, size_t n_kw, const mp_obj_t *args_in) {};
+
 static void LCD_ST7735S_init(mp_obj_t *self) {};
-static void LCD_ST7735S_update(mp_obj_t *self_in) {};
+static void LCD_ST7735S_update(mp_obj_t *self) {};
+static void LCD_ST7735S_on(mp_obj_t *self) {};
+static void LCD_ST7735S_off(mp_obj_t *self) {};
+static void LCD_ST7735S_reset(mp_obj_t *self) {};
+static void LCD_ST7735S_invert(mp_obj_t *self) {};
+static void LCD_ST7735S_rotation(mp_obj_t *self, mp_obj_t rotation_int) {};
+static void LCD_ST7735S_fill(mp_obj_t *self, mp_obj_t color_tuple) {};
+static void LCD_ST7735S_pixel(mp_obj_t *self, mp_obj_t xy_tuple, mp_obj_t color_tuple) {};
+static void LCD_ST7735S_blit(mp_obj_t *self, mp_obj_t xywh_tuple, mp_obj_t buffer_bytes) {};
+static void LCD_ST7735S_read(mp_obj_t *self, mp_obj_t xy_tuple, mp_obj_t amount_int) {};
+static void LCD_ST7735S_write(mp_obj_t *self, mp_obj_t xy_tuple, mp_obj_t buffer_bytes) {};
+static void LCD_ST7735S_set_register(mp_obj_t *self, mp_obj_t register, mp_obj_t bytes) {};
+static void LCD_ST7735S_read_register(mp_obj_t *self, mp_obj_t register) {};
+static void LCD_ST7735S_set_register(mp_obj_t *self, mp_obj_t register, mp_obj_t bytes) {};
+static void LCD_ST7735S_read_register(mp_obj_t *self, mp_obj_t register) {};
 
 static void ST7735S_write_command(mp_obj_t *self, uint8_t command) {};
 static void ST7735S_write_data(mp_obj_t *self, int len, uint8_t[] data) {};
@@ -146,21 +161,38 @@ static const mp_obj_type_t LCD_ST7735S_type;
 
 static void LCD_ST7735S_print(const mp_print_t *print, mp_obj_t self_in, mp_print_kind_t kind) {};
 
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_update_obj, LCD_ST7735S_update); //self
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_init_obj, LCD_ST7735S_init); //self
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_on_obj, LCD_ST7735S_on); //self
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_off_obj, LCD_ST7735S_off); //self
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_reset_obj, LCD_ST7735S_reset); //self
+MP_DEFINE_CONST_FUN_OBJ_1(LCD_ST7735S_invert_obj, LCD_ST7735S_invert); //self
+MP_DEFINE_CONST_FUN_OBJ_2(LCD_ST7735S_rotation_obj, LCD_ST7735S_rotation); //self, rotation
+MP_DEFINE_CONST_FUN_OBJ_2(LCD_ST7735S_fill_obj, LCD_ST7735S_fill); //self, color
+MP_DEFINE_CONST_FUN_OBJ_3(LCD_ST7735S_pixel_obj, LCD_ST7735S_pixel); //self, tuple(x,y), color
+MP_DEFINE_CONST_FUN_OBJ_3(LCD_ST7735S_blit_obj, LCD_ST7735S_blit); //self,tuple(x,y,w,h), buffer
+MP_DEFINE_CONST_FUN_OBJ_3(LCD_ST7735S_read_obj, LCD_ST7735S_read); //self, tuple(x,y), amount
+MP_DEFINE_CONST_FUN_OBJ_3(LCD_ST7735S_write_obj, LCD_ST7735S_write); //self, tuple(x,y), buffer
+MP_DEFINE_CONST_FUN_OBJ_3(LCD_ST7735S_set_register_obj, LCD_ST7735S_set_register); //self, register, bytes[value]
+MP_DEFINE_CONST_FUN_OBJ_2(LCD_ST7735S_read_register_obj, LCD_ST7735S_read_register); //self, register (amount of bytes depends on register)
 
 static const mp_rom_map_elem_t ST7735S_locals_dict_table[] = {
-    { MP_ROM_QSTR(MP_QSTR_update), MP_ROM_PTR(&LCD_ST7735S_update) },
-    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&LCD_ST7735S_init) },
-    { MP_ROM_QSTR(MP_QSTR_on), MP_ROM_PTR(&LCD_ST7735S_on)},
-    { MP_ROM_QSTR(MP_QSTR_off), MP_ROM_PTR(&LCD_ST7735S_off)},
-    { MP_ROM_QSTR(MP_QSTR_reset), MP_ROM_PTR(&LCD_ST7735S_reset)},
-    { MP_ROM_QSTR(MP_QSTR_invert), MP_ROM_PTR(&LCD_ST7735S_invert)},
-    { MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&LCD_ST7735S_rotation)},
-    { MP_ROM_QSTR(MP_QSTR_buffer), MP_ROM_PTR(&LCD_ST7735S_buffer)},
-    { MP_ROM_QSTR(MP_QSTR_fill), MP_ROM_PTR(&LCD_ST7735S_fill)},
-    { MP_ROM_QSTR(MP_QSTR_pixel), MP_ROM_PTR(&LCD_ST7735S_pixel)},
-    { MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&LCD_ST7735S_blit)},
-    { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&LCD_ST7735S_read)},
-    { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&LCD_ST773S_write)}
+    // MP_ROM_QSTR defines (string in macro) dict key, MP_ROM_PTR (object pointer) defines dict value
+    { MP_ROM_QSTR(MP_QSTR_update), MP_ROM_PTR(&LCD_ST7735S_update_obj) },
+    { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&LCD_ST7735S_init_obj) },
+    { MP_ROM_QSTR(MP_QSTR_on), MP_ROM_PTR(&LCD_ST7735S_on_obj)},
+    { MP_ROM_QSTR(MP_QSTR_off), MP_ROM_PTR(&LCD_ST7735S_off_obj)},
+    { MP_ROM_QSTR(MP_QSTR_reset), MP_ROM_PTR(&LCD_ST7735S_reset_obj)},
+    { MP_ROM_QSTR(MP_QSTR_invert), MP_ROM_PTR(&LCD_ST7735S_invert_obj)},
+    { MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&LCD_ST7735S_rotation_obj)},
+    { MP_ROM_QSTR(MP_QSTR_buffer), MP_ROM_PTR()}, //bytes
+    { MP_ROM_QSTR(MP_QSTR_fill), MP_ROM_PTR(&LCD_ST7735S_fill_obj)},
+    { MP_ROM_QSTR(MP_QSTR_pixel), MP_ROM_PTR(&LCD_ST7735S_pixel_obj)},
+    { MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&LCD_ST7735S_blit_obj)},
+    { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&LCD_ST7735S_read_obj)},
+    { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&LCD_ST773S_write_obj)},
+    { MP_ROM_QSTR(MP_QSTR_set_register), MP_ROM_PTR(&LCD_ST7735S_set_register_obj)},
+    { MP_ROM_QSTR(MP_QSTR_read_register), MP_ROM_PTR(&LCD_ST7735S_read_register_obj)}
 };
 
 static MP_DEFINE_CONST_DICT(ST7735S_locals_dict, ST7735S_locals_dict_table);
