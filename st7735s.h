@@ -25,6 +25,7 @@
 #define CASET   0x2A // Column Address Set
 #define RASET   0x2B // Row Address Set
 #define RAMWR   0x2C // Memory Write
+#define RGBSET  0x2D // Color Set
 #define RAMRD   0x2E // Memory Read
 
 #define PTLAR   0x30 // Partial Area
@@ -65,6 +66,14 @@
 
 #define GCV   0xFC // Gate Control Value
 
+static const uint8_t[] no_data_commands_table = {
+    NOP, SWRESET, RDDID, RDDST, RDDPM, RDDMADCTL, RDDCOLMOD,
+    RDDIM, RDDSM, RDDSDR, SLPIN, SLPOUT, PTLON, NORON,
+    INVOFF, INVON, DISPOFF, DISPON, RAMRD, SCRLAR,
+    TEOFF, VSCSAD, IDMOFF, IDMON, RDID1, RDID2,
+    RDID3
+};
+
 static struct machine_spi_read_write {
     mp_obj_t (*read)(mp_obj_t *self, size_t len);
     void (*write)(mp_obj_t *self, const uint8_t *data, size_t len);
@@ -86,15 +95,17 @@ static void LCD_ST7735S_print(const mp_print_t *print, mp_obj_t self_in, mp_prin
 static const mp_rom_map_elem_t ST7735S_locals_dict_table[] = {
     { MP_ROM_QSTR(MP_QSTR_update), MP_ROM_PTR(&LCD_ST7735S_update) },
     { MP_ROM_QSTR(MP_QSTR_init), MP_ROM_PTR(&LCD_ST7735S_init) },
-    // on
-    // off
-    // invert
-    // rotation
-    // buffer
-    // fill
-    // pixel
-    // blit
-    
+    { MP_ROM_QSTR(MP_QSTR_on), MP_ROM_PTR(&LCD_ST7735S_on)},
+    { MP_ROM_QSTR(MP_QSTR_off), MP_ROM_PTR(&LCD_ST7735S_off)},
+    { MP_ROM_QSTR(MP_QSTR_reset), MP_ROM_PTR(&LCD_ST7735S_reset)},
+    { MP_ROM_QSTR(MP_QSTR_invert), MP_ROM_PTR(&LCD_ST7735S_invert)},
+    { MP_ROM_QSTR(MP_QSTR_rotation), MP_ROM_PTR(&LCD_ST7735S_rotation)},
+    { MP_ROM_QSTR(MP_QSTR_buffer), MP_ROM_PTR(&LCD_ST7735S_buffer)},
+    { MP_ROM_QSTR(MP_QSTR_fill), MP_ROM_PTR(&LCD_ST7735S_fill)},
+    { MP_ROM_QSTR(MP_QSTR_pixel), MP_ROM_PTR(&LCD_ST7735S_pixel)},
+    { MP_ROM_QSTR(MP_QSTR_blit), MP_ROM_PTR(&LCD_ST7735S_blit)},
+    { MP_ROM_QSTR(MP_QSTR_read), MP_ROM_PTR(&LCD_ST7735S_read)},
+    { MP_ROM_QSTR(MP_QSTR_write), MP_ROM_PTR(&LCD_ST773S_write)}
 };
 
 static MP_DEFINE_CONST_DICT(ST7735S_locals_dict, ST7735S_locals_dict_table);

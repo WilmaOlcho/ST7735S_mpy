@@ -49,10 +49,10 @@
 #[GMCTRP1 amount (2 bytes)][DATA]
 #[GMCTRN1 amount (2 bytes)][DATA]
 #[GCV amount (2 bytes)][DATA]
+#[RGBSET amount (2 bytes)][DATA]
 
 import PyQt6.QtCore as QtCore
 import PyQt6.QtWidgets as QtWidgets, PyQt6.QtGui as QtGui
-
 
 class ConfigFile:
     datakeys = ["NOP", "SWRESET", "SLPIN", "SLPOUT", "PTLON", "NORON", \
@@ -62,7 +62,7 @@ class ConfigFile:
                 "FRMCTR1", "FRMCTR2", "FRMCTR3", "INVCTR", "PWCTR1", "PWCTR2", \
                 "PWCTR3", "PWCTR4", "PWCTR5", "VMCTR1", "VMOFCTR", "WRID1", \
                 "WRID2", "WRID3", "NVFCTR1", "RDID1", "RDID2", "RDID3", \
-                "NVFCTR2", "NVFCTR3", "GMCTRP1", "GMCTRN1", "GCV"]
+                "NVFCTR2", "NVFCTR3", "GMCTRP1", "GMCTRN1", "GCV", "RGBSET"]
 
     def __init__(self, filename:str):
         self.filename = filename
@@ -188,13 +188,77 @@ class file_edit(QtWidgets.QWidget):
             self.higher.config = ConfigFile(filename)
             self.higher.config.write_config()
 
+class DescriptionArea(QtWidgets.QTextEdit):
+    def __init__(self, parent=None, text=""):
+        super().__init__(parent)
+        self.setReadOnly(True)
+        self.setFixedHeight(80)
+        self.setTextInteractionFlags(QtCore.Qt.TextInteractionFlag.NoTextInteraction)
+        self.setStyleSheet("background-color: light gray; border: 1px solid light gray; font-size: 12px;")
+        self.setPlainText("text")        
 class command_edit(QtWidgets.QWidget):
+    desctriptions = {
+        "NOP": "No operation, delay in ms",
+        "SWRESET": "Software reset, delay in ms",
+        "RDDID": "Read display ID, delay in ms",
+        "RDDST": "Read display status, delay in ms",
+        "RDDPM": "Read display power mode, delay in ms",
+        "RDDMADCTL": "Read memory access control, delay in ms",
+        "RDDCOLMOD": "Read color mode, delay in ms",
+        "RDDIM": "Read display image format, delay in ms",
+        "RDDSM": "Read display signal mode, delay in ms",
+        "SLPIN": "Sleep in & booster off, delay in ms",
+        "SLPOUT": "Sleep out & booster on, delay in ms",
+        "PTLON": "Partial mode on, delay in ms",
+        "NORON": "Normal mode on, delay in ms",
+        "INVOFF": "Display inversion off, delay in ms",
+        "INVON": "Display inversion on, delay in ms",
+        "GAMSET": "Gamma set, 00h-0Fh [1 byte]",
+        "DISPOFF": "Display off, delay in ms",
+        "DISPON": "Display on, delay in ms",
+        "CASET": "Column address set, 0000h-FFFFh for xaddress sart and 0000h-FFFFh for xaddress end [4 bytes big endian total]",
+        "RASET": "Row address set 0000h-FFFFh for yaddress sart and 0000h-FFFFh for yaddress end [4 bytes big endian total]",
+        "RAMWR": "Memory write, 00h-FFh for data [1 byte]",
+        "RGBSET": "RGB set, 00h-1Fh for each byte, 32 bytes for red, 64 bytes for green, 32 bytes for blue [128 bytes total]",
+        "RAMRD": "Memory read, delay in ms",
+        "PTLAR": "Partial area, 0000h-FFFFh for  partial address sart and 0000h-FFFFh for partial address end [4 bytes big endian total]",
+        "SCRLAR": "Scroll area",
+        "TEOFF": "Tearing effect off, delay in ms",
+        "TEON": "Tearing effect on, 00h mode 1, 01h mode 2",
+        "MADCTL": "Memory access control, 00h-FBh FBh masked [1 byte]",
+        "VSCSAD": "Vertical scroll area",
+        "IDMOFF": "Idle mode off, delay in ms",
+        "IDMON": "Idle mode on, delay in ms",
+        "COLMOD": "Color mode, 00h-07h [1 byte], 03h 12 bit color, 05h 16 bit color, 06h 18 bit color, 07h not used",
+        "FRMCTR1": "Frame rate control 1",
+        "FRMCTR2": "Frame rate control 2",
+        "FRMCTR3": "Frame rate control 3",
+        "INVCTR": "Display inversion control",
+        "PWCTR1": "Power control 1",
+        "PWCTR2": "Power control 2",
+        "PWCTR3": "Power control 3",
+        "PWCTR4": "Power control 4",
+        "PWCTR5": "Power control 5",
+        "VMCTR1": "VCOM control 1",
+        "VMOFCTR": "VCOM offset control",
+        "WRID1": "Write ID 1",
+        "WRID2": "Write ID 2",
+        "WRID3": "Write ID 3",
+        "NVFCTR1": "NV memory function 1",
+        "RDID1": "Read ID 1, delay in ms",
+        "RDID2": "Read ID 2, delay in ms",
+        "RDID3": "Read ID 3, delay in ms",
+        "NVFCTR2": "NV memory function 2",
+        "NVFCTR3": "NV memory function 3",
+        "GMCTRP1": "Gamma curve positive",
+        "GMCTRN1": "Gamma curve negative",
+        "GCV": "Gamma curve value",
+    }
     def __init__(self, parent=None):
         super().__init__(parent)
         self.higher = parent
         self.resize(640, 80)
-        self.setFixedHeight(80)
-        #self.setStyleSheet("border: 1px light gray;")
+        self.setFixedHeight(160)
 
         self.combo_line = QtWidgets.QWidget()
         self.combo_line.setFixedHeight(40)
@@ -218,6 +282,8 @@ class command_edit(QtWidgets.QWidget):
         self.command_active.setChecked(False)
         self.command_active.stateChanged.connect(self.data_changed)
 
+        self.description = DescriptionArea()
+
         self.combo_line.layout = QtWidgets.QHBoxLayout()
         self.combo_line.layout.addWidget(self.command)
         self.combo_line.layout.addWidget(self.data)
@@ -227,6 +293,7 @@ class command_edit(QtWidgets.QWidget):
         self.layout_widget.layout = QtWidgets.QVBoxLayout()
         self.layout_widget.layout.addWidget(self.combo_line)
         self.layout_widget.layout.addWidget(self.command_active)
+        self.layout_widget.layout.addWidget(self.description)
         self.layout_widget.layout.setSpacing(0)
         self.layout_widget.setLayout(self.layout_widget.layout)
 
@@ -238,6 +305,7 @@ class command_edit(QtWidgets.QWidget):
 
     def command_changed(self):
         command = self.command.currentText()
+        self.description.setPlainText(self.desctriptions.get(command, ""))
         if self.higher.config == None:
             self.data.setText("")
             return
