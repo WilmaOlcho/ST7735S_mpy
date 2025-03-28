@@ -19,13 +19,13 @@
 
 #define INVOFF  0x20 // Display Inversion Off
 #define INVON   0x21 // Display Inversion On
-#define GAMSET  0x26 // Gamma Set
+#define GAMSET  0x26 //// Gamma Set
 #define DISPOFF 0x28 // Display Off
 #define DISPON  0x29 // Display On
 #define CASET   0x2A // Column Address Set
 #define RASET   0x2B // Row Address Set
 #define RAMWR   0x2C // Memory Write
-#define RGBSET  0x2D // Color Set
+#define RGBSET  0x2D // LUT table Set
 #define RAMRD   0x2E // Memory Read
 
 #define PTLAR   0x30 // Partial Area
@@ -64,14 +64,69 @@
 #define GMCTRP1 0xE0 // Gamma + correction
 #define GMCTRN1 0xE1 // Gamma - correction
 
-#define GCV   0xFC // Gate Control Value
+#define GCV   0xFC // Gate Pump Clock
 
 static const uint8_t[] no_data_commands_table = {
     NOP, SWRESET, RDDID, RDDST, RDDPM, RDDMADCTL, RDDCOLMOD,
     RDDIM, RDDSM, RDDSDR, SLPIN, SLPOUT, PTLON, NORON,
-    INVOFF, INVON, DISPOFF, DISPON, RAMRD, SCRLAR,
-    TEOFF, VSCSAD, IDMOFF, IDMON, RDID1, RDID2,
-    RDID3
+    INVOFF, INVON, DISPOFF, DISPON, RAMRD,
+    TEOFF, IDMOFF, IDMON, RDID1, RDID2, RDID3
+};
+
+static const uint8_t[] _1byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _1byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _2byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _2byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _3byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _3byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _4byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _4byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _6byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _6byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _16byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _16byte_write_commands_table = {
+    
+};
+
+static const uint8_t[] _128byte_read_commands_table = {
+    
+};
+
+static const uint8_t[] _128byte_write_commands_table = {
+    
 };
 
 static struct machine_spi_read_write {
